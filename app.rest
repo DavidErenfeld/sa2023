@@ -1,0 +1,87 @@
+
+###
+GET http://127.0.0.1:3000/student
+
+###
+GET http://127.0.0.1:3000/student?name=David
+
+
+###
+GET http://127.0.0.1:3000/student/123456
+
+###
+POST  http://127.0.0.1:3000/student
+Content-Type: application/json
+
+{
+  "name": "David",
+  "_id": "31571144"
+}
+
+###
+PUT   http://127.0.0.1:3000/student/31571144
+Content-Type: application/json
+
+{
+ "name": "Moshe",
+  "_id": "315711443"
+}
+
+###
+DELETE   http://127.0.0.1:3000/student/31571144
+
+
+// Student Post
+
+###
+GET http://127.0.0.1:3000/studentPost
+
+
+###
+POST  http://127.0.0.1:3000/studentPost
+Content-Type: application/json
+
+{
+  "owner": "David",
+  "title": "nh",
+  "content": "This is a post content"
+}
+
+###
+POST  http://127.0.0.1:3000/studentPost
+Content-Type: application/json
+
+{
+  "owner": "Moshe",
+  "title": "this is a title",
+  "content": "This is a post content"
+}
+
+###
+POST  http://127.0.0.1:3000/studentPost
+Content-Type: application/json
+
+{
+  "owner": "Chava",
+  "title": "aaaa",
+  "content": "This is a post content"
+}
+
+
+###
+GET http://127.0.0.1:3000/studentPost/658aa61d0c402556d28c0db3
+
+
+###
+GET http://127.0.0.1:3000/studentPost/owner/David
+
+
+###
+PUT   http://127.0.0.1:3000/studentPost/658aa61d0c402556d28c0db3
+Content-Type: application/json
+
+{
+   "owner": "Yosi",
+  "title": "aaaa",
+  "content": "This is a post content"
+}
