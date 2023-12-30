@@ -85,3 +85,32 @@ Content-Type: application/json
   "title": "aaaa",
   "content": "This is a post content"
 }
+
+// Auth
+
+###
+POST  http://127.0.0.1:3000/auth/register
+Content-Type: application/json
+
+{
+  "email": "Moshe",
+  "password": "1234567890"
+}
+
+###
+POST  http://127.0.0.1:3000/auth/login
+Content-Type: application/json
+
+{
+  "email": "Moshe",
+  "password": "1234567890"
+}
+
+###
+POST  http://127.0.0.1:3000/auth/logout
+Content-Type: application/json
+
+{
+  "email": "Moshe",
+  "password": "1234567890"
+}

@@ -6,6 +6,7 @@ import mongoose from "mongoose";
 import bodyParser from "body-parser";
 import studentRoutes from "./routes/student_routes";
 import studentPostRoutes from "./routes/student_post_routes";
+import authRoutes from "./routes/auth_routes";
 
 const initApp = () => {
   const db = mongoose.connection;
@@ -19,6 +20,7 @@ const initApp = () => {
         app.use(bodyParser.urlencoded({ extended: true }));
         app.use("/student", studentRoutes);
         app.use("/studentPost", studentPostRoutes);
+        app.use("/auth", authRoutes);
         resolve(app);
       })
       .catch((err) => {

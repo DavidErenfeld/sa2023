@@ -2,7 +2,6 @@ import request from "supertest";
 import initApp from "../app";
 import mongoose from "mongoose";
 import Student from "../models/student_model";
-import StudentPost from "../models/student_post_model ";
 import { Express } from "express";
 
 let app: Express;
