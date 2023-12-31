@@ -1,6 +1,7 @@
 
 ###
 GET http://127.0.0.1:3000/student
+Authorization:jwt eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6IjY1OTEzNWRhZjBiMWM1ZTQxYmM3YzRhOSIsImlhdCI6MTcwNDAxOTI3MSwiZXhwIjoxNzA0MDIyODcxfQ.kCQIm0R3B7Z93ldnZ2F3DM9TAcdhfAJMVjbt1C46jMM
 
 ###
 GET http://127.0.0.1:3000/student?name=David

@@ -23,7 +23,7 @@ const login = async (req: Request, res: Response) => {
       return res.status(400).send("password is not match");
     }
 
-    const token = jwt.sign({ id: user._id }, process.env.JWT_SECRET, {
+    const token = jwt.sign({ _id: user._id }, process.env.JWT_SECRET, {
       expiresIn: process.env.JWT_EXPIRE,
     });
 

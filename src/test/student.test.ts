@@ -3,13 +3,28 @@ import initApp from "../app";
 import mongoose from "mongoose";
 import Student from "../models/student_model";
 import { Express } from "express";
+import UserModel from "../models/user_model";
 
 let app: Express;
+let token: string;
 //Delete DB before test
 beforeAll(async () => {
   app = await initApp();
   console.log("jest beforeAll");
   await Student.deleteMany();
+  await UserModel.deleteMany();
+
+  await request(app).post("/auth/register").send({
+    email: "test",
+    password: "test",
+  });
+
+  const response = await request(app).post("/auth/login").send({
+    email: "test",
+    password: "test",
+  });
+
+  token = response.body.accessToken;
 });
 
 //Close DB after test
@@ -41,7 +56,10 @@ describe("--Test Student Module --", () => {
 
   //FUNCTION  Add a new student and send to the DB
   const addNewStudent = async (student: any) => {
-    const response = await request(app).post("/student").send(student);
+    const response = await request(app)
+      .post("/student")
+      .send(student)
+      .set("Authorization", "JWT " + token);
 
     expect(response.statusCode).toEqual(200);
     expect(response.text).toEqual("OK");
@@ -56,7 +74,9 @@ describe("--Test Student Module --", () => {
   //TEST 1
   test("1 Test get all students - empty collection", async () => {
     //Test if status cod == 200
-    const response = await request(app).get("/student");
+    const response = await request(app)
+      .get("/student")
+      .set("Authorization", "JWT " + token);
     expect(response.statusCode).toEqual(200);
 
     //Test if the collection is empty
@@ -72,13 +92,18 @@ describe("--Test Student Module --", () => {
 
   // TEST 3
   test("3 Test add new student fail--> duplicate id", async () => {
-    const response = await request(app).post("/student").send(student1);
+    const response = await request(app)
+      .post("/student")
+      .send(student1)
+      .set("Authorization", "JWT " + token);
     expect(response.statusCode).toEqual(409);
   });
 
   //TEST 4
   test("4 test get student by name", async () => {
-    const response = await request(app).get(`/student?name=${student1.name}`);
+    const response = await request(app)
+      .get(`/student?name=${student1.name}`)
+      .set("Authorization", "JWT " + token);
     expect(response.statusCode).toEqual(200);
     const st = response.body[0];
     expect(st.name).toEqual(student1.name);
@@ -86,13 +111,17 @@ describe("--Test Student Module --", () => {
 
   //TEST 6
   test("6 test get student by name fail --name is not found", async () => {
-    const response = await request(app).get(`/student?name=${student1.name}a`);
+    const response = await request(app)
+      .get(`/student?name=${student1.name}a`)
+      .set("Authorization", "JWT " + token);
     expect(response.statusCode).toEqual(404);
   });
 
   //TEST 7
   test("7 Test get all students - one student", async () => {
-    const response = await request(app).get("/student");
+    const response = await request(app)
+      .get("/student")
+      .set("Authorization", "JWT " + token);
     expect(response.statusCode).toEqual(200);
 
     const data = response.body;
@@ -109,7 +138,9 @@ describe("--Test Student Module --", () => {
     // מדמה שגיאת חיבור בזמן הפעלת Student.findById()
     stopConnection("find");
 
-    const response = await request(app).get(`/student`);
+    const response = await request(app)
+      .get(`/student`)
+      .set("Authorization", "JWT " + token);
 
     // משחזר את ההתנהגות המקורית של Student.findById()
     jest.restoreAllMocks();
@@ -120,7 +151,9 @@ describe("--Test Student Module --", () => {
   //TEST 9.1
   test("9.1 Test get student by ID - success", async () => {
     // Retrieve the added student by ID
-    const response = await request(app).get(`/student/${student1._id}`);
+    const response = await request(app)
+      .get(`/student/${student1._id}`)
+      .set("Authorization", "JWT " + token);
     expect(response.statusCode).toEqual(200);
 
     const st = response.body;
@@ -133,7 +166,9 @@ describe("--Test Student Module --", () => {
     // מדמה שגיאת חיבור בזמן הפעלת Student.findById()
     stopConnection("findById");
 
-    const response = await request(app).get(`/student/${student1._id}`);
+    const response = await request(app)
+      .get(`/student/${student1._id}`)
+      .set("Authorization", "JWT " + token);
 
     // משחזר את ההתנהגות המקורית של Student.findById()
     jest.restoreAllMocks();
@@ -145,7 +180,9 @@ describe("--Test Student Module --", () => {
   test("10 Test get student by ID - fail", async () => {
     jest.restoreAllMocks();
     // Retrieve the added student by ID
-    const response = await request(app).get(`/student/444444444`);
+    const response = await request(app)
+      .get(`/student/444444444`)
+      .set("Authorization", "JWT " + token);
     expect(response.statusCode).toEqual(404);
   });
 
@@ -156,7 +193,9 @@ describe("--Test Student Module --", () => {
 
   //TEST 12
   test("12 Test get all students - 2 students", async () => {
-    const response = await request(app).get("/student");
+    const response = await request(app)
+      .get("/student")
+      .set("Authorization", "JWT " + token);
     expect(response.statusCode).toEqual(200);
 
     const data = response.body;
@@ -176,7 +215,8 @@ describe("--Test Student Module --", () => {
   test("13 put student by ID", async () => {
     const response = await request(app)
       .put(`/student/${student1._id}`)
-      .send(student3);
+      .send(student3)
+      .set("Authorization", "JWT " + token);
 
     expect(response.statusCode).toBe(200);
 
@@ -190,7 +230,8 @@ describe("--Test Student Module --", () => {
   test("14.1 put student by ID file-- ID not found", async () => {
     const response = await request(app)
       .put(`/student/${student3._id}1`)
-      .send(student3);
+      .send(student3)
+      .set("Authorization", "JWT " + token);
 
     expect(response.statusCode).toBe(404);
   });
@@ -201,7 +242,8 @@ describe("--Test Student Module --", () => {
 
     const response = await request(app)
       .put(`/student/${student4._id}`)
-      .send(student4);
+      .send(student4)
+      .set("Authorization", "JWT " + token);
 
     // משחזר את ההתנהגות המקורית של Student.findByIdAndUpdate()
     jest.restoreAllMocks();
@@ -211,14 +253,18 @@ describe("--Test Student Module --", () => {
 
   //TEST 15
   test("15 delete student by ID", async () => {
-    const response = await request(app).delete(`/student/${student2._id}`);
+    const response = await request(app)
+      .delete(`/student/${student2._id}`)
+      .set("Authorization", "JWT " + token);
 
     expect(response.statusCode).toBe(200);
   });
 
   //TEST 16
   test("16 delete student by ID fail -- ID not found", async () => {
-    const response = await request(app).delete(`/student/${student2._id}1`);
+    const response = await request(app)
+      .delete(`/student/${student2._id}1`)
+      .set("Authorization", "JWT " + token);
 
     expect(response.statusCode).toBe(404);
   });
@@ -229,7 +275,9 @@ describe("--Test Student Module --", () => {
 
     stopConnection("findOneAndDelete");
 
-    const response = await request(app).delete(`/student/${student1._id}`);
+    const response = await request(app)
+      .delete(`/student/${student1._id}`)
+      .set("Authorization", "JWT " + token);
 
     //Connectiong back
     jest.restoreAllMocks();
@@ -239,7 +287,9 @@ describe("--Test Student Module --", () => {
 
   //TEST 17
   test("17 Test get all students - one student", async () => {
-    const response = await request(app).get("/student");
+    const response = await request(app)
+      .get("/student")
+      .set("Authorization", "JWT " + token);
     expect(response.statusCode).toEqual(200);
 
     const data = response.body;

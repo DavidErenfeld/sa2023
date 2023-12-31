@@ -4,7 +4,8 @@
   "description": "backend",
   "main": "server.js",
   "scripts": {
-    "test": "tsc && jest --detectOpenHandles --forceExit ./src/test/auth.test.ts",
+    "test": "tsc && jest --detectOpenHandles --forceExit",
+    "testAuth": "tsc && jest --detectOpenHandles --forceExit ./src/test/auth.test.ts",
     "dev": "nodemon ./src/server.ts",
     "start": "tsc && node dist/src/server.js",
     "lint": "eslint . --ext .ts"

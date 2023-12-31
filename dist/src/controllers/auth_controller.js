@@ -31,7 +31,7 @@ const login = (req, res) => __awaiter(void 0, void 0, void 0, function* () {
         if (!isMatch) {
             return res.status(400).send("password is not match");
         }
-        const token = jsonwebtoken_1.default.sign({ id: user._id }, process.env.JWT_SECRET, {
+        const token = jsonwebtoken_1.default.sign({ _id: user._id }, process.env.JWT_SECRET, {
             expiresIn: process.env.JWT_EXPIRE,
         });
         res.status(200).send({ accessToken: token });

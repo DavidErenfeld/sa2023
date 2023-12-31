@@ -49,6 +49,16 @@ describe("--Auth Tests--", () => {
             password: "test",
         });
         expect(response.status).toEqual(200);
+        const token = response.body.accessToken;
+        expect(token).not.toBeNull();
+        const response2 = yield (0, supertest_1.default)(app)
+            .get("/student")
+            .set("Authorization", "JWT " + token);
+        expect(response2.status).toEqual(200);
+        const response3 = yield (0, supertest_1.default)(app)
+            .get("/student")
+            .set("Authorization", "JWT 1" + token);
+        expect(response3.status).toEqual(401);
     }));
     test("logeout test", () => __awaiter(void 0, void 0, void 0, function* () {
         // const response = await request(app).post("/auth/logout").send({
