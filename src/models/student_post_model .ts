@@ -4,6 +4,7 @@ export interface IStudentPost {
   owner: string;
   title: string;
   content: string;
+  _id?: string;
 }
 
 const studentPostSchema = new mongoose.Schema<IStudentPost>({

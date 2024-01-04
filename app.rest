@@ -1,7 +1,7 @@
 
 ###
 GET http://127.0.0.1:3000/student
-
+Authorization:jwt eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJfaWQiOiI2NTkyY2Q3YmFiODEyYjFiMWMwZTNkYWIiLCJpYXQiOjE3MDQxMTk2NzksImV4cCI6MTcwNDEyMzI3OX0.h-wijVBQU5W5BM_IGx4AXdYYr034mWSKJP8qpwMF-MM
 ###
 GET http://127.0.0.1:3000/student?name=David
 
@@ -40,6 +40,8 @@ GET http://127.0.0.1:3000/studentPost
 ###
 POST  http://127.0.0.1:3000/studentPost
 Content-Type: application/json
+Authorization:jwt eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJfaWQiOiI2NTkyY2Q3YmFiODEyYjFiMWMwZTNkYWIiLCJpYXQiOjE3MDQxMTk2NzksImV4cCI6MTcwNDEyMzI3OX0.h-wijVBQU5W5BM_IGx4AXdYYr034mWSKJP8qpwMF-MM
+
 
 {
   "owner": "David",
@@ -50,6 +52,8 @@ Content-Type: application/json
 ###
 POST  http://127.0.0.1:3000/studentPost
 Content-Type: application/json
+Authorization:jwt eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJfaWQiOiI2NTkyY2Q3YmFiODEyYjFiMWMwZTNkYWIiLCJpYXQiOjE3MDQxMTk2NzksImV4cCI6MTcwNDEyMzI3OX0.h-wijVBQU5W5BM_IGx4AXdYYr034mWSKJP8qpwMF-MM
+
 
 {
   "owner": "Moshe",
@@ -60,6 +64,7 @@ Content-Type: application/json
 ###
 POST  http://127.0.0.1:3000/studentPost
 Content-Type: application/json
+Authorization:jwt eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJfaWQiOiI2NTk0YWQ0NzlhNmJhNmE5Njc2NWQ4NDciLCJpYXQiOjE3MDQyNDI1MDcsImV4cCI6MTcwNDI0NjEwN30.R6mD7tjIP9a6CG3je760yXV7qtcAUPALhOErwHPx_Y0
 
 {
   "owner": "Chava",
@@ -77,12 +82,13 @@ GET http://127.0.0.1:3000/studentPost/owner/David
 
 
 ###
-PUT   http://127.0.0.1:3000/studentPost/658aa61d0c402556d28c0db3
+PUT   http://127.0.0.1:3000/studentPost/6592d71f2cdb2b41a7fc334b
 Content-Type: application/json
+Authorization:jwt eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJfaWQiOiI2NTkyY2Q3YmFiODEyYjFiMWMwZTNkYWIiLCJpYXQiOjE3MDQxMjE5OTMsImV4cCI6MTcwNDEyNTU5M30.K77vHOpI4Q8HVmxBAoTOE531aytUNuX0J_77lCEF7fg
 
 {
-   "owner": "Yosi",
-  "title": "aaaa",
+   "owner": "JYHTGRFECD",
+  "title": "apdate",
   "content": "This is a post content"
 }
 
@@ -93,7 +99,7 @@ POST  http://127.0.0.1:3000/auth/register
 Content-Type: application/json
 
 {
-  "email": "Moshe",
+  "email": "appRest@test.com",
   "password": "1234567890"
 }
 
@@ -102,7 +108,7 @@ POST  http://127.0.0.1:3000/auth/login
 Content-Type: application/json
 
 {
-  "email": "Moshe",
+  "email": "appRest@test.com",
   "password": "1234567890"
 }
 
