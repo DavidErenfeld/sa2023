@@ -15,6 +15,35 @@ Object.defineProperty(exports, "__esModule", { value: true });
 const user_model_1 = __importDefault(require("../models/user_model"));
 const bcrypt_1 = __importDefault(require("bcrypt"));
 const jsonwebtoken_1 = __importDefault(require("jsonwebtoken"));
+const register = (req, res) => __awaiter(void 0, void 0, void 0, function* () {
+    console.log("register");
+    const email = req.body.email;
+    const password = req.body.password;
+    if (email == null || password == null) {
+        return res.status(400).send("email or password is null");
+    }
+    try {
+        const existUser = yield user_model_1.default.findOne({ email: email });
+        if (existUser != null) {
+            return res.status(400).send("email is exist");
+        }
+    }
+    catch (err) {
+        res.status(500).send("server error");
+    }
+    try {
+        const salt = yield bcrypt_1.default.genSalt();
+        const hashedPassword = yield bcrypt_1.default.hash(password, salt);
+        const user = yield user_model_1.default.create({
+            email: email,
+            password: hashedPassword,
+        });
+        res.status(200).send(user);
+    }
+    catch (err) {
+        res.status(500).send("Server error");
+    }
+});
 const login = (req, res) => __awaiter(void 0, void 0, void 0, function* () {
     console.log("login");
     const email = req.body.email;
@@ -43,7 +72,6 @@ const login = (req, res) => __awaiter(void 0, void 0, void 0, function* () {
             user.tokens.push(refreshToken);
         }
         yield user.save();
-        console.log("46" + user.tokens);
         res.status(200).send({
             accessToken: accessToken,
             refreshToken: refreshToken,
@@ -51,35 +79,6 @@ const login = (req, res) => __awaiter(void 0, void 0, void 0, function* () {
     }
     catch (err) {
         return res.status(500).send("server error");
-    }
-});
-const register = (req, res) => __awaiter(void 0, void 0, void 0, function* () {
-    console.log("register");
-    const email = req.body.email;
-    const password = req.body.password;
-    if (email == null || password == null) {
-        return res.status(400).send("email or password is null");
-    }
-    try {
-        const existUser = yield user_model_1.default.findOne({ email: email });
-        if (existUser != null) {
-            return res.status(400).send("email is exist");
-        }
-    }
-    catch (err) {
-        res.status(500).send("server error");
-    }
-    try {
-        const salt = yield bcrypt_1.default.genSalt();
-        const hashedPassword = yield bcrypt_1.default.hash(password, salt);
-        const user = yield user_model_1.default.create({
-            email: email,
-            password: hashedPassword,
-        });
-        res.status(200).send(user);
-    }
-    catch (err) {
-        res.status(500).send("Server error");
     }
 });
 const refresh = (req, res) => __awaiter(void 0, void 0, void 0, function* () {
@@ -120,18 +119,13 @@ const logout = (req, res) => __awaiter(void 0, void 0, void 0, function* () {
     if (refreshToken == null)
         return res.sendStatus(401);
     jsonwebtoken_1.default.verify(refreshToken, process.env.JWT_REFRESH_SECRET, (err, user) => __awaiter(void 0, void 0, void 0, function* () {
-        console.log("138" + err);
         if (err)
             return res.sendStatus(401);
         try {
             const userDb = yield user_model_1.default.findOne({ _id: user._id });
             if (!userDb.tokens || !userDb.tokens.includes(refreshToken)) {
-                /////////////////////////////////////////////
-                console.log(userDb.tokens);
                 userDb.tokens = [];
                 yield userDb.save();
-                /////////////////////////////////////////////
-                console.log(userDb.tokens);
                 return res.sendStatus(401);
             }
             else {
