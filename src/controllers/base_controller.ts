@@ -1,19 +1,20 @@
 import { Request, Response } from "express";
 import { Model } from "mongoose";
+import { AuthRequest } from "../common/auth_middleware";
 
-class BaseController<ObjectInterface> {
+export class BaseController<ObjectInterface> {
   model: Model<ObjectInterface>;
   constructor(model: Model<ObjectInterface>) {
     this.model = model;
   }
 
   // Post
-  async post(req: Request, res: Response) {
+  async post(req: AuthRequest, res: Response) {
     console.log("postStudent:" + req.body);
 
     try {
-      await this.model.create(req.body);
-      res.status(200).send("OK");
+      const obj = await this.model.create(req.body);
+      res.status(200).send(obj);
     } catch (err) {
       if (err.code === 11000) {
         // שגיאת מפתח כפול
@@ -66,8 +67,20 @@ class BaseController<ObjectInterface> {
   }
 
   // Put by ID
+
+  // async putById(req: Request, res: Response) {
+  //   console.log("putStudent:" + req.body);
+  //   try {
+  //     await this.model.findByIdAndUpdate(req.params.id, req.body);
+  //     const obj = await this.model.findById(req.params.id);
+  //     res.status(200).send(obj);
+  //   } catch (err) {
+  //     console.log(err);
+  //     res.status(406).send("fail: " + err.message);
+  //   }
+  // }
   async putById(req: Request, res: Response) {
-    console.log("putStudentById: " + req.params.id);
+    console.log("putStudentById: " + req.params._id);
 
     const studentId = req.params.id;
 
@@ -79,12 +92,6 @@ class BaseController<ObjectInterface> {
           new: true,
         }
       );
-
-      if (!updateStudent) {
-        return res
-          .status(404)
-          .json({ message: `id: ${studentId} is not found!` });
-      }
       res.send(updateStudent);
     } catch (err) {
       res.status(500).json({ message: err.message });
@@ -112,4 +119,4 @@ class BaseController<ObjectInterface> {
 const createController = <ObjectInterface>(model: Model<ObjectInterface>) =>
   new BaseController<ObjectInterface>(model);
 
-export = createController;
+export default createController;

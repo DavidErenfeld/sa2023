@@ -31,18 +31,27 @@ const login = (req, res) => __awaiter(void 0, void 0, void 0, function* () {
         if (!isMatch) {
             return res.status(400).send("password is not match");
         }
-        const token = jsonwebtoken_1.default.sign({ _id: user._id }, process.env.JWT_SECRET, {
-            expiresIn: process.env.JWT_EXPIRE,
+        // Create accessToken
+        const accessToken = yield jsonwebtoken_1.default.sign({ _id: user._id }, process.env.JWT_SECRET, { expiresIn: process.env.JWT_EXPIRATION });
+        // Create refreshToken
+        const refreshToken = yield jsonwebtoken_1.default.sign({ _id: user._id }, process.env.JWT_REFRESH_SECRET);
+        // Put refreshToken in the DB
+        if (user.tokens == null) {
+            user.tokens = [refreshToken];
+        }
+        else {
+            user.tokens.push(refreshToken);
+        }
+        yield user.save();
+        console.log("46" + user.tokens);
+        res.status(200).send({
+            accessToken: accessToken,
+            refreshToken: refreshToken,
         });
-        res.status(200).send({ accessToken: token });
     }
     catch (err) {
         return res.status(500).send("server error");
     }
-});
-const logout = (req, res) => __awaiter(void 0, void 0, void 0, function* () {
-    console.log("logout");
-    res.status(400).send("logout");
 });
 const register = (req, res) => __awaiter(void 0, void 0, void 0, function* () {
     console.log("register");
@@ -73,5 +82,68 @@ const register = (req, res) => __awaiter(void 0, void 0, void 0, function* () {
         res.status(500).send("Server error");
     }
 });
-exports.default = { login, logout, register };
+const refresh = (req, res) => __awaiter(void 0, void 0, void 0, function* () {
+    const authHeader = req.headers["authorization"];
+    const refreshToken = authHeader && authHeader.split(" ")[1]; // Bearer <token>
+    if (refreshToken == null)
+        return res.sendStatus(401);
+    jsonwebtoken_1.default.verify(refreshToken, process.env.JWT_REFRESH_SECRET, (err, user) => __awaiter(void 0, void 0, void 0, function* () {
+        if (err) {
+            console.log(err);
+            return res.sendStatus(401);
+        }
+        try {
+            const userDb = yield user_model_1.default.findOne({ _id: user._id });
+            if (!userDb.tokens || !userDb.tokens.includes(refreshToken)) {
+                userDb.tokens = [];
+                yield userDb.save();
+                return res.sendStatus(401);
+            }
+            const accessToken = jsonwebtoken_1.default.sign({ _id: user._id }, process.env.JWT_SECRET, { expiresIn: process.env.JWT_EXPIRATION });
+            const newRefreshToken = jsonwebtoken_1.default.sign({ _id: user._id }, process.env.JWT_REFRESH_SECRET);
+            userDb.tokens = userDb.tokens.filter((t) => t !== refreshToken);
+            userDb.tokens.push(newRefreshToken);
+            yield userDb.save();
+            return res.status(200).send({
+                accessToken: accessToken,
+                refreshToken: refreshToken,
+            });
+        }
+        catch (err) {
+            res.sendStatus(401).send(err.message);
+        }
+    }));
+});
+const logout = (req, res) => __awaiter(void 0, void 0, void 0, function* () {
+    const authHeader = req.headers["authorization"];
+    const refreshToken = authHeader && authHeader.split(" ")[1]; // Bearer <token>
+    if (refreshToken == null)
+        return res.sendStatus(401);
+    jsonwebtoken_1.default.verify(refreshToken, process.env.JWT_REFRESH_SECRET, (err, user) => __awaiter(void 0, void 0, void 0, function* () {
+        console.log("138" + err);
+        if (err)
+            return res.sendStatus(401);
+        try {
+            const userDb = yield user_model_1.default.findOne({ _id: user._id });
+            if (!userDb.tokens || !userDb.tokens.includes(refreshToken)) {
+                /////////////////////////////////////////////
+                console.log(userDb.tokens);
+                userDb.tokens = [];
+                yield userDb.save();
+                /////////////////////////////////////////////
+                console.log(userDb.tokens);
+                return res.sendStatus(401);
+            }
+            else {
+                userDb.tokens = userDb.tokens.filter((t) => t !== refreshToken);
+                yield userDb.save();
+                return res.sendStatus(200);
+            }
+        }
+        catch (err) {
+            res.sendStatus(401).send(err.message);
+        }
+    }));
+});
+exports.default = { login, logout, register, refresh };
 //# sourceMappingURL=auth_controller.js.map

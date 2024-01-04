@@ -11,25 +11,54 @@ var __awaiter = (this && this.__awaiter) || function (thisArg, _arguments, P, ge
 var __importDefault = (this && this.__importDefault) || function (mod) {
     return (mod && mod.__esModule) ? mod : { "default": mod };
 };
+Object.defineProperty(exports, "__esModule", { value: true });
 const student_post_model_1 = __importDefault(require("../models/student_post_model "));
-const base_controller_1 = __importDefault(require("./base_controller"));
+const base_controller_1 = require("./base_controller");
 // יצירת הקונטרולר הבסיסי
-const StudentPostController = (0, base_controller_1.default)(student_post_model_1.default);
+class StudentPostController extends base_controller_1.BaseController {
+    constructor(model) {
+        super(model);
+    }
+    post(req, res) {
+        const _super = Object.create(null, {
+            post: { get: () => super.post }
+        });
+        return __awaiter(this, void 0, void 0, function* () {
+            const userId = req.user._id;
+            const message = req.body;
+            message.owner = userId;
+            _super.post.call(this, req, res);
+        });
+    }
+    putById(req, res) {
+        const _super = Object.create(null, {
+            putById: { get: () => super.putById }
+        });
+        return __awaiter(this, void 0, void 0, function* () {
+            const userId = req.user._id;
+            const message = req.body;
+            message.owner = userId;
+            _super.putById.call(this, req, res);
+        });
+    }
+}
+exports.default = new StudentPostController(student_post_model_1.default);
 // הוספת פונקציונליות חדשה לקונטרולר
-StudentPostController.getStudentPostsByOwner = (req, res) => __awaiter(void 0, void 0, void 0, function* () {
-    try {
-        const posts = yield student_post_model_1.default.find({ owner: req.params.ownerId });
-        if (posts.length === 0) {
-            return res
-                .status(404)
-                .json({ message: `${req.params.owner} is not found` });
-        }
-        // console.log(...posts);
-        res.send(posts);
-    }
-    catch (err) {
-        res.status(500).json({ message: err.message });
-    }
-});
-module.exports = StudentPostController;
+// (StudentPostController as any).getStudentPostsByOwner = async (
+//   req: Request,
+//   res: Response
+// ) => {
+//   try {
+//     const posts = await StudentPost.find({ owner: req.params.ownerId });
+//     if (posts.length === 0) {
+//       return res
+//         .status(404)
+//         .json({ message: `${req.params.owner} is not found` });
+//     }
+//     // console.log(...posts);
+//     res.send(posts);
+//   } catch (err) {
+//     res.status(500).json({ message: err.message });
+//   }
+// };
 //# sourceMappingURL=student_post_controller.js.map

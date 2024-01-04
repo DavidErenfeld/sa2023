@@ -4,6 +4,7 @@ import AuthController from "../controllers/auth_controller";
 
 router.post("/register", AuthController.register);
 router.post("/login", AuthController.login);
-router.post("/logout", AuthController.logout);
+router.get("/logout", AuthController.logout);
+router.get("/refresh", AuthController.refresh);
 
 export = router;
