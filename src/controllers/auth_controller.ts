@@ -153,3 +153,7 @@ const logout = async (req: Request, res: Response) => {
   );
 };
 export default { login, logout, register, refresh };
+
+//eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJfaWQiOiI2NTk3NjcxMzI3OWFhYjRlNDhlOGVhMjEiLCJpYXQiOjE3MDQ0MjEyNzR9._CYjAaS7ItFfY43TtVr_yDhnU1kRno8rnl3RVt77X_s
+
+//eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJfaWQiOiI2NTk3NjcxMzI3OWFhYjRlNDhlOGVhMjEiLCJpYXQiOjE3MDQ0MjE0MTUsImV4cCI6MTcwNDQyNTAxNX0.aGDDOQms0a1JZ3RtfLtTromXKPCOxvTDpQJSXNaQapE

@@ -99,9 +99,6 @@ describe("--Auth Tests--", () => {
             .get("/auth/logout")
             .set("Authorization", "JWT " + refreshToken)
             .send();
-        // console.log(
-        //   `==========############$$$$$$$$$$$$${response1.body.refreshToken}==========############$$$$$$$$$$$$`
-        // );
         expect(response1.status).toEqual(200);
         const response2 = yield (0, supertest_1.default)(app)
             .get("/auth/refresh")
@@ -109,8 +106,7 @@ describe("--Auth Tests--", () => {
             .send();
         expect(response2.status).not.toEqual(200);
     }));
-    /////////////////////////////////////////////////////
-    test("Test Register", () => __awaiter(void 0, void 0, void 0, function* () {
+    test("Test Register 2", () => __awaiter(void 0, void 0, void 0, function* () {
         const response = yield (0, supertest_1.default)(app).post("/auth/register").send(user1);
         expect(response.statusCode).toBe(200);
     }));
@@ -143,40 +139,4 @@ describe("--Auth Tests--", () => {
         expect(response1.statusCode).not.toEqual(200);
     }));
 });
-// test("Successful register", async () => {
-//   const response = await request(app).post("/auth/register").send(user);
-//   expect(response.status).toBe(200);
-// });
-// // טסט להרשמה עם אימייל קיים
-// test("Register with existing email", async () => {
-//   const response = await request(app).post("/auth/register").send(user);
-//   expect(response.status).toBe(400);
-// });
-// // טסט לכניסה
-// test("Successful login", async () => {
-//   const response = await request(app).post("/auth/login").send(user);
-//   expect(response.status).toBe(200);
-//   accessToken = response.body.accessToken;
-//   refreshToken = response.body.refreshToken;
-// });
-// // טסט לכניסה עם סיסמה שגויה
-// test("Login with wrong password", async () => {
-//   const response = await request(app).post("/auth/login").send(user);
-//   expect(response.status).toBe(400);
-// });
-// // טסט לרענון טוקן
-// test("Successful token refresh", async () => {
-//   const response = await request(app)
-//     .get("/auth/refresh")
-//     .set("Authorization", `JWT ${refreshToken}`);
-//   expect(response.status).toBe(200);
-//   newRefreshToken = response.body.refreshToken;
-// });
-// // טסט להתנתקות
-// test("Successful logout", async () => {
-//   const response = await request(app)
-//     .get("/auth/logout")
-//     .set("Authorization", `JWT ${newRefreshToken}`);
-//   expect(response.status).toBe(200);
-// });
 //# sourceMappingURL=auth.test.js.map

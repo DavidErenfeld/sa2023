@@ -1,12 +1,18 @@
 import express, { Express } from "express";
 import dotenv from "dotenv";
-dotenv.config();
+
 const app = express();
 import mongoose from "mongoose";
 import bodyParser from "body-parser";
 import studentRoutes from "./routes/student_routes";
 import studentPostRoutes from "./routes/student_post_routes";
 import authRoutes from "./routes/auth_routes";
+
+if (process.env.NODE_ENV == "test") {
+  dotenv.config({ path: "./.testenv" });
+} else {
+  dotenv.config();
+}
 
 const initApp = () => {
   const db = mongoose.connection;
